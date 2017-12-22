@@ -25,6 +25,10 @@ export function fetchData(store, props) {
  */
 export function fetchDataOnLocationMatch(history, routes, match, store) {
   history.listen(_.after(1, route =>
-    match({ routes, location: route.pathname }, (error, redirect, props) =>
-      props && fetchData(store, props))));
+    match({ routes, location: route.pathname }, (error, redirect, props) => {
+      if (props) {
+        _.extend(props.location, _.pick(route, ['search', 'query']));
+        fetchData(store, props);
+      }
+    })));
 }
